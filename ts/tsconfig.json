@@ -1,0 +1,7 @@
+{
+    "files": [
+        "babylon.d.ts",
+        "Viewer.ts", 
+        "Timer.ts"
+    ]
+}
