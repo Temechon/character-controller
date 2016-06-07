@@ -30,13 +30,22 @@ var Viewer = (function () {
         var _this = this;
         // The loader
         var loader = new BABYLON.AssetsManager(this.scene);
-        var meshTask = loader.addMeshTask("bug", "", "./assets/bug/", "bug.babylon");
-        meshTask.onSuccess = function (t) {
-            // for (let m of t.loadedMeshes) {
-            //     m.setEnabled (false);
-            // }
-            _this.assets['bug'] = { meshes: t.loadedMeshes };
+        // let bug = loader.addMeshTask("bug", "", "./assets/bug/", "bug.babylon");
+        // bug.onSuccess = (t:any) => {
+        //     this.assets['bug'] = {meshes : t.loadedMeshes}
+        // };
+        var ninja = loader.addMeshTask("ninja", "", "./assets/ninja1/", "ninja.babylon");
+        ninja.onSuccess = function (t) {
+            _this.assets['ninja'] = { meshes: t.loadedMeshes };
         };
+        // let ninja2 = loader.addMeshTask("ninja2", "", "./assets/ninja2/", "ninja2.babylon");
+        // ninja2.onSuccess = (t:any) => {
+        //     this.assets['ninja2'] = {meshes : t.loadedMeshes}
+        // };
+        // let elf = loader.addMeshTask("elf", "", "./assets/elf/", "elf.babylon");
+        // elf.onSuccess = (t:any) => {
+        //     this.assets['elf'] = {meshes : t.loadedMeshes}
+        // };
         loader.onFinish = function () {
             _this.scene.executeWhenReady(function () {
                 _this.engine.runRenderLoop(function () {
@@ -47,9 +56,14 @@ var Viewer = (function () {
             _this._initGame();
         };
         loader.load();
+        this.scene.debugLayer.show();
     };
     Viewer.prototype._initGame = function () {
         var ground = BABYLON.Mesh.CreateGround("ground1", 6, 6, 2, this.scene);
+        var c = new CharacterController(this.scene);
+        c.attachTo(this.assets['ninja'].meshes);
+        // let c2 = new CharacterController(this.scene);
+        // c2.attachTo(this.assets['ninja2'].meshes); 
     };
     return Viewer;
 }());
