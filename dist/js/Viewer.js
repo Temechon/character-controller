@@ -14,7 +14,7 @@ var Viewer = (function () {
     }
     Viewer.prototype.initScene = function () {
         this.scene = new BABYLON.Scene(this.engine);
-        var camera = new BABYLON.ArcRotateCamera('', 0, 0, 10, new BABYLON.Vector3(0, 0, 0), this.scene);
+        var camera = new BABYLON.ArcRotateCamera('', 0, 1.5, 100, new BABYLON.Vector3(0, 0, 0), this.scene);
         camera.attachControl(this.engine.getRenderingCanvas());
         // let light  = new BABYLON.HemisphericLight('', new BABYLON.Vector3(0,1,0), this.scene);
         // light.intensity = 0.5;
@@ -59,9 +59,15 @@ var Viewer = (function () {
         this.scene.debugLayer.show();
     };
     Viewer.prototype._initGame = function () {
-        var ground = BABYLON.Mesh.CreateGround("ground1", 6, 6, 2, this.scene);
+        var ground = BABYLON.Mesh.CreateGround("ground1", 600, 600, 2, this.scene);
         var c = new CharacterController(this.scene);
+        c.offsetRotation = new BABYLON.Vector3(-Math.PI / 2, 0, 0);
+        c.offsetScaling = new BABYLON.Vector3(0.25, 0.25, 0.25);
         c.attachTo(this.assets['ninja'].meshes);
+        c.addAnimation('idle', 0, 39);
+        c.addAnimation('walk', 45, 85);
+        c.speed = 0.25;
+        c.destination = new BABYLON.Vector3(50, 0, 0);
         // let c2 = new CharacterController(this.scene);
         // c2.attachTo(this.assets['ninja2'].meshes); 
     };
