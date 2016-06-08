@@ -46,10 +46,10 @@ class Viewer {
         // The loader
         let loader =  new BABYLON.AssetsManager(this.scene);
 
-        // let bug = loader.addMeshTask("bug", "", "./assets/bug/", "bug.babylon");
-        // bug.onSuccess = (t:any) => {
-        //     this.assets['bug'] = {meshes : t.loadedMeshes}
-        // };
+        let bug = loader.addMeshTask("bug", "", "./assets/bug/", "bug.babylon");
+        bug.onSuccess = (t:any) => {
+            this.assets['bug'] = {meshes : t.loadedMeshes}
+        };
         let ninja = loader.addMeshTask("ninja", "", "./assets/ninja1/", "ninja.babylon");
         ninja.onSuccess = (t:any) => {
             this.assets['ninja'] = {meshes : t.loadedMeshes}
@@ -84,16 +84,20 @@ class Viewer {
         let ground = BABYLON.Mesh.CreateGround("ground1", 600, 600, 2, this.scene);
         
         let c = new CharacterController(this.scene);
-        c.offsetRotation = new BABYLON.Vector3(-Math.PI/2, 0, 0);
-        c.offsetScaling = new BABYLON.Vector3(0.25,0.25,0.25);
-        c.attachTo(this.assets['ninja'].meshes);
+        // c.offsetRotation = new BABYLON.Vector3(-Math.PI/2, 0, 0);
+        c.offsetScaling = new BABYLON.Vector3(5,5,5);
+        c.attachTo(this.assets['bug'].meshes);
  
         c.addAnimation('idle',0, 39);
         c.addAnimation('walk', 45, 85);
 
-        c.speed = 0.25;
-
-        c.destination = new BABYLON.Vector3(50,0,0);
+        c.speed = 0.15;
+            
+        this.scene.onPointerDown = (evt, pr) => {
+            if (pr.hit) {
+                c.destination = pr.pickedPoint;
+            }
+        }
 
         // let c2 = new CharacterController(this.scene);
         // c2.attachTo(this.assets['ninja2'].meshes); 

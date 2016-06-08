@@ -39,6 +39,8 @@ var CharacterController = (function () {
             // Compute direction
             this._direction = this._destination.subtract(this._parent.position);
             this._direction.normalize();
+            // Rotate
+            this.lookAt(value);
             // Animate the character
             this.playAnimation('walk', true, 1);
         },
@@ -67,6 +69,14 @@ var CharacterController = (function () {
         enumerable: true,
         configurable: true
     });
+    /**
+     * The character looks at the given position, but rotates only along Y-axis
+     * */
+    CharacterController.prototype.lookAt = function (value) {
+        var dv = value.subtract(this._parent.position);
+        var yaw = -Math.atan2(dv.z, dv.x) - Math.PI / 2;
+        this._parent.rotation.y = yaw + this._offsetRotation.y;
+    };
     /**
      * Attach the given mesh to this controller, and found the character skeleton.
      * The skeleton used for the mesh animation (and the debug viewer) is the first found one.
@@ -99,7 +109,6 @@ var CharacterController = (function () {
         if (this._canMove && !this.stop) {
             // Compute distance to destination
             var distance = BABYLON.Vector3.Distance(this._parent.position, this._destination);
-            console.log(distance);
             if (distance < CharacterController.Epsilon) {
                 // Destination has been reached
                 this._canMove = false;

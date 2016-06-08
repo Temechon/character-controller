@@ -30,10 +30,10 @@ var Viewer = (function () {
         var _this = this;
         // The loader
         var loader = new BABYLON.AssetsManager(this.scene);
-        // let bug = loader.addMeshTask("bug", "", "./assets/bug/", "bug.babylon");
-        // bug.onSuccess = (t:any) => {
-        //     this.assets['bug'] = {meshes : t.loadedMeshes}
-        // };
+        var bug = loader.addMeshTask("bug", "", "./assets/bug/", "bug.babylon");
+        bug.onSuccess = function (t) {
+            _this.assets['bug'] = { meshes: t.loadedMeshes };
+        };
         var ninja = loader.addMeshTask("ninja", "", "./assets/ninja1/", "ninja.babylon");
         ninja.onSuccess = function (t) {
             _this.assets['ninja'] = { meshes: t.loadedMeshes };
@@ -61,13 +61,17 @@ var Viewer = (function () {
     Viewer.prototype._initGame = function () {
         var ground = BABYLON.Mesh.CreateGround("ground1", 600, 600, 2, this.scene);
         var c = new CharacterController(this.scene);
-        c.offsetRotation = new BABYLON.Vector3(-Math.PI / 2, 0, 0);
-        c.offsetScaling = new BABYLON.Vector3(0.25, 0.25, 0.25);
-        c.attachTo(this.assets['ninja'].meshes);
+        // c.offsetRotation = new BABYLON.Vector3(-Math.PI/2, 0, 0);
+        c.offsetScaling = new BABYLON.Vector3(5, 5, 5);
+        c.attachTo(this.assets['bug'].meshes);
         c.addAnimation('idle', 0, 39);
         c.addAnimation('walk', 45, 85);
-        c.speed = 0.25;
-        c.destination = new BABYLON.Vector3(50, 0, 0);
+        c.speed = 0.15;
+        this.scene.onPointerDown = function (evt, pr) {
+            if (pr.hit) {
+                c.destination = pr.pickedPoint;
+            }
+        };
         // let c2 = new CharacterController(this.scene);
         // c2.attachTo(this.assets['ninja2'].meshes); 
     };

@@ -60,6 +60,9 @@ class CharacterController {
         // Compute direction
         this._direction = this._destination.subtract(this._parent.position);
         this._direction.normalize();        
+        
+        // Rotate
+        this.lookAt(value);
 
         // Animate the character
         this.playAnimation('walk', true, 1);
@@ -79,6 +82,15 @@ class CharacterController {
     set offsetScaling(value:BABYLON.Vector3) {
         this._offsetScaling.copyFrom(value);
         this._parent.scaling.copyFrom(value);
+    }
+    
+    /**
+     * The character looks at the given position, but rotates only along Y-axis 
+     * */
+    private lookAt(value:BABYLON.Vector3){
+        var dv = value.subtract(this._parent.position);
+        var yaw = -Math.atan2(dv.z, dv.x) - Math.PI / 2;
+        this._parent.rotation.y = yaw + this._offsetRotation.y;
     }
 
     /** 
@@ -116,7 +128,6 @@ class CharacterController {
         if (this._canMove && !this.stop) {
             // Compute distance to destination
             let distance = BABYLON.Vector3.Distance(this._parent.position, this._destination);
-            console.log(distance);
             if (distance < CharacterController.Epsilon) {
                 // Destination has been reached
                 this._canMove = false;
